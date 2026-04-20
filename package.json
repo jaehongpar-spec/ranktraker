@@ -1,0 +1,19 @@
+{
+  "name": "rank-tracker",
+  "version": "1.0.0",
+  "description": "쿠팡 키워드 순위 추적기",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0",
+    "node-cron": "^3.0.3",
+    "better-sqlite3": "^9.4.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
