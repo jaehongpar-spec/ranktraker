@@ -16,7 +16,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-function randomDelay(min = 2000, max = 5000) {
+function randomDelay(min = 10000, max = 20000) {
   return sleep(Math.floor(Math.random() * (max - min) + min))
 }
 
@@ -30,7 +30,7 @@ async function searchRank(keyword, productId) {
     let overallPosition = 0
 
     for (let page = 1; page <= pages; page++) {
-      await randomDelay(1500, 4000)
+      await sleep(Math.floor(Math.random() * 2000 + 1000))
 
       const url = `https://www.coupang.com/np/search?component=&q=${encodeURIComponent(keyword)}&channel=user&page=${page}`
 
