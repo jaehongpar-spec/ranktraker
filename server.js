@@ -1,5 +1,6 @@
 const express = require('express')
-const cron = require('node-cron')
+const http = require('http')
+const WebSocket = require('ws')
 const path = require('path')
 const { getDb } = require('./db')
 const { searchRank, randomDelay } = require('./crawler')
@@ -9,6 +10,21 @@ const PORT = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
+
+const server = http.createServer(app)
+const wss = new WebSocket.Server({ server })
+
+// 진행상황 브로드캐스트
+function broadcast(data) {
+  const msg = JSON.stringify(data)
+  wss.clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) client.send(msg)
+  })
+}
+
+wss.on('connection', ws => {
+  ws.on('error', () => {})
+})
 
 // ── 상품 API ──────────────────────────────────────
 
@@ -43,11 +59,11 @@ app.post('/api/products', async (req, res) => {
 
 app.put('/api/products/:id', async (req, res) => {
   try {
-    const { name, product_id, url, image_url } = req.body
+    const { name, product_id, url } = req.body
     const db = await getDb()
     await db.run(
-      `UPDATE products SET name=?, product_id=?, url=?, image_url=?, updated_at=datetime('now','localtime') WHERE id=?`,
-      name, product_id, url || '', image_url || '', req.params.id
+      `UPDATE products SET name=?, product_id=?, url=?, updated_at=datetime('now','localtime') WHERE id=?`,
+      name, product_id, url || '', req.params.id
     )
     res.json({ ok: true })
   } catch (e) { res.status(500).json({ error: e.message }) }
@@ -120,31 +136,47 @@ app.get('/api/products/:id/ranks', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }) }
 })
 
+app.get('/health', (req, res) => res.json({ ok: true }))
+
+// ── 크롤링 API ────────────────────────────────────
+
+let crawling = false
+
 app.post('/api/crawl/:productId', async (req, res) => {
+  if (crawling) return res.status(429).json({ error: '이미 조회 중입니다. 잠시 후 다시 시도하세요.' })
   try {
     const db = await getDb()
     const product = await db.get('SELECT * FROM products WHERE id=?', req.params.productId)
     if (!product) return res.status(404).json({ error: '상품 없음' })
-    res.json({ ok: true, message: '크롤링을 시작했습니다. 잠시 후 새로고침하세요.' })
+    res.json({ ok: true })
     crawlProduct(product)
   } catch (e) { res.status(500).json({ error: e.message }) }
-})
-
-app.post('/api/crawl-all', async (req, res) => {
-  res.json({ ok: true, message: '전체 크롤링을 시작했습니다.' })
-  runDailyCrawl()
 })
 
 // ── 크롤링 로직 ───────────────────────────────────
 
 async function crawlProduct(product) {
+  if (crawling) return
+  crawling = true
+
   const db = await getDb()
   const keywords = await db.all('SELECT * FROM keywords WHERE product_id=?', product.id)
   const today = new Date().toISOString().slice(0, 10)
-  console.log(`[${product.name}] 크롤링 시작 (${keywords.length}개 키워드)`)
+  const total = keywords.length
 
-  for (const kw of keywords) {
-    console.log(`  키워드: ${kw.keyword}`)
+  broadcast({ type: 'crawl_start', productName: product.name, total })
+
+  for (let i = 0; i < keywords.length; i++) {
+    const kw = keywords[i]
+
+    broadcast({
+      type: 'crawl_progress',
+      current: i + 1,
+      total,
+      keyword: kw.keyword,
+      status: 'searching'
+    })
+
     const result = await searchRank(kw.keyword, product.product_id)
     const adMin = result.adRanks.length > 0 ? Math.min(...result.adRanks) : null
     const adMax = result.adRanks.length > 0 ? Math.max(...result.adRanks) : null
@@ -160,28 +192,29 @@ async function crawlProduct(product) {
         error=excluded.error
     `, kw.id, product.id, today, result.natural, adMin, adMax, result.totalScanned, result.error || null)
 
-    await randomDelay(3000, 7000)
+    broadcast({
+      type: 'crawl_progress',
+      current: i + 1,
+      total,
+      keyword: kw.keyword,
+      status: 'done',
+      natural: result.natural,
+      adMin,
+      adMax,
+      error: result.error || null
+    })
+
+    if (i < keywords.length - 1) {
+      const delay = Math.floor(Math.random() * 10000 + 10000)
+      broadcast({ type: 'crawl_waiting', keyword: kw.keyword, waitSec: Math.round(delay / 1000) })
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
   }
-  console.log(`[${product.name}] 크롤링 완료`)
+
+  broadcast({ type: 'crawl_done', productName: product.name })
+  crawling = false
 }
 
-async function runDailyCrawl() {
-  const db = await getDb()
-  const products = await db.all('SELECT * FROM products')
-  console.log(`[일일 크롤링] 시작 - ${products.length}개 상품`)
-  for (const product of products) {
-    await crawlProduct(product)
-    await randomDelay(5000, 10000)
-  }
-  console.log('[일일 크롤링] 완료')
-}
-
-// 매일 오전 7시 KST (UTC 22:00)
-cron.schedule('0 22 * * *', () => {
-  console.log('[CRON] 일일 순위 크롤링 시작')
-  runDailyCrawl()
-}, { timezone: 'UTC' })
-
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`)
 })
