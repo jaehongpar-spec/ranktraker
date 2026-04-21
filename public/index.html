@@ -10,208 +10,154 @@
   --bg:#f4f5f7;--surface:#fff;--border:#e0e2e7;--border2:#c8cad0;
   --text:#1a1d23;--text2:#6b7280;--text3:#9ca3af;
   --blue:#2563eb;--blue-bg:#eff6ff;--blue-light:#dbeafe;
-  --green:#16a34a;--green-bg:#f0fdf4;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-light:#dcfce7;
   --red:#dc2626;--red-bg:#fef2f2;
-  --amber:#d97706;--amber-bg:#fffbeb;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-light:#fef3c7;
   --gray-bg:#f9fafb;
-  --up:#ef4444;--down:#3b82f6;--same:#6b7280;
   --radius:8px;--radius-lg:12px;
 }
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
 
-/* Layout */
 .layout{display:flex;min-height:100vh}
 .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh}
-.main{flex:1;overflow:hidden;min-width:0}
+.main{flex:1;overflow:hidden;min-width:0;display:flex;flex-direction:column}
 
-/* Sidebar */
 .sidebar-header{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
 .sidebar-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
 .sidebar-sub{font-size:11px;color:var(--text3)}
 .sidebar-scroll{flex:1;overflow-y:auto;padding:8px}
-.prod-item{
-  padding:10px 10px;border-radius:var(--radius);cursor:pointer;
-  margin-bottom:2px;transition:background .15s;
-  display:flex;align-items:center;gap:8px;
-}
+.prod-item{padding:10px;border-radius:var(--radius);cursor:pointer;margin-bottom:2px;transition:background .15s;display:flex;align-items:center;gap:8px}
 .prod-item:hover{background:var(--bg)}
 .prod-item.active{background:var(--blue-bg);border:1px solid var(--blue-light)}
-.prod-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;background:var(--bg);flex-shrink:0;border:1px solid var(--border)}
 .prod-thumb-placeholder{width:36px;height:36px;border-radius:6px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .prod-info{flex:1;min-width:0}
 .prod-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prod-id{font-size:10px;color:var(--text3);margin-top:1px}
 .prod-kw-count{font-size:10px;color:var(--blue);background:var(--blue-bg);padding:1px 5px;border-radius:3px;flex-shrink:0}
-.add-prod-btn{
-  margin:8px;padding:8px;border:1.5px dashed var(--border2);border-radius:var(--radius);
-  background:none;cursor:pointer;font-size:12px;color:var(--text2);
-  width:calc(100% - 16px);font-family:inherit;transition:background .15s;
-}
+.add-prod-btn{margin:8px;padding:8px;border:1.5px dashed var(--border2);border-radius:var(--radius);background:none;cursor:pointer;font-size:12px;color:var(--text2);width:calc(100% - 16px);font-family:inherit;transition:background .15s}
 .add-prod-btn:hover{background:var(--bg)}
 
-/* Header */
-.main-header{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:10;
-}
-.header-left h2{font-size:16px;font-weight:700;color:var(--text)}
+.main-header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header-left h2{font-size:16px;font-weight:700}
 .header-left p{font-size:11px;color:var(--text3);margin-top:1px}
 .header-actions{display:flex;gap:8px;align-items:center}
-.btn{
-  height:32px;padding:0 14px;border-radius:6px;font-size:12px;font-weight:500;
-  cursor:pointer;font-family:inherit;border:1px solid var(--border);
-  background:var(--surface);color:var(--text);transition:background .15s;white-space:nowrap;
-}
+.btn{height:32px;padding:0 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:background .15s;white-space:nowrap}
 .btn:hover{background:var(--bg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-.btn-primary:hover{background:#1d4ed8}
+.btn-primary:hover:not(:disabled){background:#1d4ed8}
 .btn-sm{height:26px;padding:0 10px;font-size:11px}
 .btn-danger{color:var(--red);border-color:#fca5a5}
 .btn-danger:hover{background:var(--red-bg)}
 
-/* Content */
-.main-content{padding:20px}
+.main-content{padding:20px;flex:1;overflow-y:auto}
 
-/* Empty state */
-.empty-state{
-  text-align:center;padding:80px 20px;color:var(--text3);
-}
-.empty-state .icon{font-size:48px;margin-bottom:16px}
-.empty-state h3{font-size:16px;color:var(--text2);margin-bottom:8px}
-.empty-state p{font-size:13px;line-height:1.6}
-
-/* Keyword section */
-.kw-section{
+/* 진행 패널 */
+.progress-panel{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden;
+  display:none;
 }
-.kw-section-header{
-  padding:12px 16px;background:var(--gray-bg);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
+.progress-panel.show{display:block}
+.progress-header{
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  background:var(--amber-bg);border-bottom:1px solid var(--amber-light);
 }
-.kw-section-title{font-size:13px;font-weight:600;color:var(--text)}
+.progress-title{font-size:13px;font-weight:600;color:var(--amber);display:flex;align-items:center;gap:8px}
+.spinner{
+  width:14px;height:14px;border:2px solid var(--amber-light);
+  border-top-color:var(--amber);border-radius:50%;
+  animation:spin .8s linear infinite;flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-header.done{background:var(--green-bg);border-color:var(--green-light)}
+.progress-header.done .progress-title{color:var(--green)}
+.progress-header.done .spinner{display:none}
 
-/* Rank table */
-.rank-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.rank-table{
-  width:100%;border-collapse:collapse;font-size:12px;
-  min-width:600px;
+.progress-bar-wrap{padding:10px 16px 4px}
+.progress-bar-bg{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--amber);border-radius:3px;transition:width .4s}
+.progress-bar-fill.done{background:var(--green)}
+.progress-pct{font-size:11px;color:var(--text2);text-align:right;padding:3px 16px 8px}
+
+.kw-progress-list{padding:0 16px 12px;display:flex;flex-direction:column;gap:4px;max-height:280px;overflow-y:auto}
+.kw-progress-item{
+  display:flex;align-items:center;gap:8px;padding:6px 10px;
+  border-radius:6px;background:var(--bg);font-size:12px;
 }
-.rank-table th{
-  padding:8px 10px;background:var(--gray-bg);border-bottom:1px solid var(--border);
-  font-weight:600;color:var(--text2);white-space:nowrap;text-align:center;
-  position:sticky;top:0;
-}
+.kw-progress-item.searching{background:var(--amber-bg);animation:pulse-bg 1.5s infinite}
+.kw-progress-item.success{background:var(--green-bg)}
+.kw-progress-item.error{background:var(--red-bg)}
+.kw-progress-item.waiting{background:var(--blue-bg)}
+.kw-progress-item.pending{background:var(--bg);color:var(--text3)}
+@keyframes pulse-bg{0%,100%{opacity:1}50%{opacity:.7}}
+
+.kw-pi-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.kw-pi-name{flex:1;font-weight:500;color:var(--text)}
+.kw-pi-status{font-size:11px;color:var(--text2);white-space:nowrap}
+.kw-pi-result{font-size:11px;font-weight:600;color:var(--green);white-space:nowrap}
+.kw-pi-result.none{color:var(--text3);font-weight:400}
+.kw-pi-result.err{color:var(--red);font-weight:400}
+
+/* 순위 표 */
+.kw-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden}
+.kw-section-header{padding:12px 16px;background:var(--gray-bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.kw-section-title{font-size:13px;font-weight:600}
+.rank-table-wrap{overflow-x:auto}
+.rank-table{width:100%;border-collapse:collapse;font-size:12px;min-width:600px}
+.rank-table th{padding:8px 10px;background:var(--gray-bg);border-bottom:1px solid var(--border);font-weight:600;color:var(--text2);white-space:nowrap;text-align:center;position:sticky;top:0}
 .rank-table th.kw-col{text-align:left;min-width:110px;left:0;z-index:2;background:var(--gray-bg)}
-.rank-table td{
-  padding:8px 10px;border-bottom:1px solid var(--border);
-  text-align:center;vertical-align:middle;white-space:nowrap;
-}
-.rank-table td.kw-col{
-  text-align:left;font-weight:500;color:var(--text);
-  background:var(--surface);position:sticky;left:0;z-index:1;
-}
+.rank-table td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;vertical-align:middle;white-space:nowrap}
+.rank-table td.kw-col{text-align:left;font-weight:500;background:var(--surface);position:sticky;left:0;z-index:1}
 .rank-table tr:last-child td{border-bottom:none}
 .rank-table tr:hover td{background:#fafafa}
 .rank-table tr:hover td.kw-col{background:#f5f5f5}
-
-/* Rank cell */
 .rank-cell{display:flex;flex-direction:column;align-items:center;gap:1px}
 .rank-num{font-size:13px;font-weight:600;color:var(--text)}
 .rank-num.good{color:var(--red)}
 .rank-num.mid{color:var(--amber)}
 .rank-num.bad{color:var(--text3)}
 .rank-range{font-size:10px;color:var(--text3)}
-.rank-arrow{font-size:10px}
-.rank-arrow.up{color:var(--up)}
-.rank-arrow.down{color:var(--down)}
-.rank-arrow.same{color:var(--same)}
+.rank-arrow.up{color:#ef4444}
+.rank-arrow.down{color:#3b82f6}
 .rank-none{color:var(--text3);font-size:11px}
 .rank-error{color:var(--red);font-size:10px}
-
-/* Date header */
 .date-today{color:var(--blue);font-weight:700}
-
-/* Keyword management */
 .kw-manage{padding:12px 16px;border-top:1px solid var(--border);background:var(--gray-bg)}
 .kw-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.kw-tag{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:4px 8px;background:var(--surface);border:1px solid var(--border);
-  border-radius:20px;font-size:11px;color:var(--text);
-}
-.kw-tag-del{
-  background:none;border:none;cursor:pointer;color:var(--text3);
-  font-size:13px;line-height:1;padding:0;transition:color .15s;
-}
+.kw-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:11px}
+.kw-tag-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;line-height:1;padding:0;transition:color .15s}
 .kw-tag-del:hover{color:var(--red)}
 .kw-add-row{display:flex;gap:6px}
-.kw-input{
-  flex:1;height:30px;padding:0 10px;border:1px solid var(--border2);
-  border-radius:6px;font-size:12px;outline:none;font-family:inherit;
-  transition:border-color .15s;
-}
+.kw-input{flex:1;height:30px;padding:0 10px;border:1px solid var(--border2);border-radius:6px;font-size:12px;outline:none;font-family:inherit;transition:border-color .15s}
 .kw-input:focus{border-color:var(--blue)}
 
-/* Modal */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.45);
-  display:flex;align-items:center;justify-content:center;z-index:100;
-  padding:20px;
-}
-.modal{
-  background:var(--surface);border-radius:var(--radius-lg);
-  width:100%;max-width:480px;overflow:hidden;
-}
-.modal-header{
-  padding:16px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:var(--surface);border-radius:var(--radius-lg);width:100%;max-width:480px;overflow:hidden}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .modal-title{font-size:15px;font-weight:700}
 .modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3);line-height:1}
 .modal-body{padding:20px}
 .modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 .form-group{margin-bottom:14px}
 .form-label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
-.form-input{
-  width:100%;height:36px;padding:0 10px;border:1px solid var(--border2);
-  border-radius:6px;font-size:13px;outline:none;font-family:inherit;
-  transition:border-color .15s;
-}
+.form-input{width:100%;height:36px;padding:0 10px;border:1px solid var(--border2);border-radius:6px;font-size:13px;outline:none;font-family:inherit;transition:border-color .15s}
 .form-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
 .form-hint{font-size:11px;color:var(--text3);margin-top:4px}
 
-/* Status bar */
-.status-bar{
-  padding:8px 20px;background:var(--amber-bg);border-bottom:1px solid #fde68a;
-  font-size:12px;color:var(--amber);display:flex;align-items:center;gap:8px;
-}
-.status-bar.success{background:var(--green-bg);border-color:#bbf7d0;color:var(--green)}
-.status-bar.hidden{display:none}
+.empty-state{text-align:center;padding:80px 20px;color:var(--text3)}
+.empty-state .icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-size:16px;color:var(--text2);margin-bottom:8px}
+.empty-state p{font-size:13px;line-height:1.6}
 
-/* Crawl status */
-.crawl-badge{
-  padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500;
-}
-.crawl-badge.running{background:var(--amber-bg);color:var(--amber)}
-.crawl-badge.done{background:var(--green-bg);color:var(--green)}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-@media(max-width:768px){
-  .sidebar{width:220px}
-  .main-content{padding:12px}
-}
 </style>
 </head>
 <body>
 
 <div class="layout">
-  <!-- 사이드바 -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">🎯 순위 추적기</div>
@@ -221,7 +167,6 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
     <button class="add-prod-btn" onclick="openAddProduct()">+ 상품 추가</button>
   </aside>
 
-  <!-- 메인 -->
   <div class="main">
     <div class="main-header">
       <div class="header-left">
@@ -229,14 +174,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
         <p id="header-sub">좌측에서 상품을 선택하거나 추가하세요</p>
       </div>
       <div class="header-actions" id="header-actions" style="display:none">
-        <span id="crawl-status"></span>
         <button class="btn btn-sm" onclick="openEditProduct()">상품 수정</button>
-        <button class="btn btn-sm btn-primary" onclick="crawlCurrent()" id="crawl-btn">순위 조회</button>
+        <button class="btn btn-sm btn-primary" onclick="crawlCurrent()" id="crawl-btn">🔍 순위 조회</button>
         <button class="btn btn-sm btn-danger" onclick="deleteProduct()">삭제</button>
       </div>
     </div>
-
-    <div id="status-bar" class="status-bar hidden"></div>
 
     <div class="main-content" id="main-content">
       <div class="empty-state">
@@ -263,7 +205,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
       <div class="form-group">
         <label class="form-label">쿠팡 상품 ID *</label>
         <input class="form-input" type="text" id="prod-coupang-id" placeholder="예: 123456789">
-        <div class="form-hint">쿠팡 상품 URL에서 확인 → /vp/products/<strong>123456789</strong>/...</div>
+        <div class="form-hint">쿠팡 상품 URL → /vp/products/<strong>123456789</strong>/...</div>
       </div>
       <div class="form-group">
         <label class="form-label">상품 URL (선택)</label>
@@ -272,26 +214,159 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('product-modal')">취소</button>
-      <button class="btn btn-primary" onclick="saveProduct()" id="save-prod-btn">저장</button>
+      <button class="btn btn-primary" onclick="saveProduct()">저장</button>
     </div>
   </div>
 </div>
 
 <script>
-let products = []
-let currentProductId = null
-let editingProductId = null
-let rankData = []
-
+const TAGS_INFO = {
+  work:{label:'업무'}, personal:{label:'개인'}, study:{label:'공부'}, health:{label:'건강'}
+}
+let products = [], currentProductId = null, editingProductId = null
+let kwProgressMap = {}
+let isCrawling = false
 const TODAY = new Date().toISOString().slice(0, 10)
 
-// ── 초기화 ──────────────────────────────────────
+// ── WebSocket ────────────────────────────────────
+let ws
+function connectWS() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws'
+  ws = new WebSocket(`${proto}://${location.host}`)
+  ws.onmessage = e => {
+    try { handleWS(JSON.parse(e.data)) } catch(_) {}
+  }
+  ws.onclose = () => setTimeout(connectWS, 2000)
+  ws.onerror = () => {}
+}
+
+function handleWS(msg) {
+  const panel = document.getElementById('progress-panel')
+  if (!panel) return
+
+  if (msg.type === 'crawl_start') {
+    isCrawling = true
+    kwProgressMap = {}
+    panel.classList.add('show')
+    updatePanelHeader(false, msg.productName, 0, msg.total)
+    renderProgressList()
+    setCrawlBtn(true)
+  }
+
+  else if (msg.type === 'crawl_progress') {
+    kwProgressMap[msg.keyword] = msg
+    const pct = Math.round(msg.current / msg.total * 100)
+    updatePanelHeader(false, null, pct, msg.total, msg.current)
+    renderProgressList()
+  }
+
+  else if (msg.type === 'crawl_waiting') {
+    if (kwProgressMap[msg.keyword]) {
+      kwProgressMap[msg.keyword]._waiting = msg.waitSec
+    }
+    renderProgressList()
+  }
+
+  else if (msg.type === 'crawl_done') {
+    isCrawling = false
+    updatePanelHeader(true, msg.productName, 100)
+    setCrawlBtn(false)
+    setTimeout(() => loadRanks(), 500)
+  }
+}
+
+function updatePanelHeader(done, name, pct, total, current) {
+  const header = document.getElementById('progress-header')
+  const titleEl = document.getElementById('progress-title-text')
+  const bar = document.getElementById('progress-bar-fill')
+  const pctEl = document.getElementById('progress-pct')
+
+  if (done) {
+    header.className = 'progress-header done'
+    titleEl.textContent = `✅ 순위 조회 완료!`
+    bar.className = 'progress-bar-fill done'
+    bar.style.width = '100%'
+    pctEl.textContent = '완료'
+  } else {
+    header.className = 'progress-header'
+    if (name) titleEl.textContent = `${name} 순위 조회 중...`
+    if (pct !== undefined) {
+      bar.style.width = pct + '%'
+      pctEl.textContent = current && total ? `${current} / ${total} 키워드` : pct + '%'
+    }
+  }
+}
+
+function renderProgressList() {
+  const list = document.getElementById('kw-progress-list')
+  if (!list) return
+
+  const keywords = Object.keys(kwProgressMap).length > 0
+    ? Object.keys(kwProgressMap)
+    : (window._currentKeywords || [])
+
+  list.innerHTML = keywords.map(kw => {
+    const d = kwProgressMap[kw]
+    if (!d) {
+      return `<div class="kw-progress-item pending">
+        <span class="kw-pi-icon">⏳</span>
+        <span class="kw-pi-name">${esc(kw)}</span>
+        <span class="kw-pi-status">대기 중</span>
+      </div>`
+    }
+
+    if (d.status === 'searching') {
+      return `<div class="kw-progress-item searching">
+        <span class="kw-pi-icon">🔍</span>
+        <span class="kw-pi-name">${esc(kw)}</span>
+        <span class="kw-pi-status">검색 중...</span>
+      </div>`
+    }
+
+    if (d.status === 'done') {
+      let resultHtml = ''
+      if (d.error) {
+        resultHtml = `<span class="kw-pi-result err">오류</span>`
+      } else if (d.natural) {
+        resultHtml = `<span class="kw-pi-result">자연 ${d.natural}위${d.adMin ? ` / 광고 ${d.adMin}위` : ''}</span>`
+      } else {
+        resultHtml = `<span class="kw-pi-result none">50위 밖</span>`
+      }
+
+      if (d._waiting) {
+        return `<div class="kw-progress-item waiting">
+          <span class="kw-pi-icon">⏱</span>
+          <span class="kw-pi-name">${esc(kw)}</span>
+          ${resultHtml}
+          <span class="kw-pi-status">${d._waiting}초 대기</span>
+        </div>`
+      }
+
+      return `<div class="kw-progress-item success">
+        <span class="kw-pi-icon">✅</span>
+        <span class="kw-pi-name">${esc(kw)}</span>
+        ${resultHtml}
+      </div>`
+    }
+
+    return ''
+  }).join('')
+}
+
+function setCrawlBtn(crawling) {
+  const btn = document.getElementById('crawl-btn')
+  if (!btn) return
+  btn.disabled = crawling
+  btn.textContent = crawling ? '⏳ 조회 중...' : '🔍 순위 조회'
+}
+
+// ── 초기화 ────────────────────────────────────────
 async function init() {
+  connectWS()
   await loadProducts()
   if (products.length > 0) selectProduct(products[0].id)
 }
 
-// ── 상품 로드 ────────────────────────────────────
 async function loadProducts() {
   const res = await fetch('/api/products')
   products = await res.json()
@@ -301,12 +376,10 @@ async function loadProducts() {
 function renderSidebar() {
   const list = document.getElementById('sidebar-list')
   list.innerHTML = ''
-
-  if (products.length === 0) {
+  if (!products.length) {
     list.innerHTML = '<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px">등록된 상품이 없습니다</div>'
     return
   }
-
   products.forEach(p => {
     const div = document.createElement('div')
     div.className = 'prod-item' + (p.id === currentProductId ? ' active' : '')
@@ -317,68 +390,74 @@ function renderSidebar() {
         <div class="prod-name">${esc(p.name)}</div>
         <div class="prod-id">ID: ${p.product_id}</div>
       </div>
-      <span class="prod-kw-count">${p.keyword_count}</span>
-    `
+      <span class="prod-kw-count">${p.keyword_count}</span>`
     list.appendChild(div)
   })
 }
 
-// ── 상품 선택 ────────────────────────────────────
 async function selectProduct(id) {
   currentProductId = id
   renderSidebar()
-
   const p = products.find(p => p.id === id)
   if (!p) return
-
   document.getElementById('header-title').textContent = p.name
   document.getElementById('header-sub').textContent = `쿠팡 ID: ${p.product_id}`
   document.getElementById('header-actions').style.display = 'flex'
-
   await loadRanks()
 }
 
-// ── 순위 데이터 로드 및 렌더 ──────────────────────
+// ── 순위 로드 & 렌더 ──────────────────────────────
 async function loadRanks() {
   if (!currentProductId) return
-  const res = await fetch(`/api/products/${currentProductId}/ranks?days=14`)
-  rankData = await res.json()
-
-  const kwRes = await fetch(`/api/products/${currentProductId}/keywords`)
+  const [rankRes, kwRes] = await Promise.all([
+    fetch(`/api/products/${currentProductId}/ranks?days=14`),
+    fetch(`/api/products/${currentProductId}/keywords`)
+  ])
+  const rankData = await rankRes.json()
   const keywords = await kwRes.json()
-
-  renderRankTable(keywords, rankData)
+  window._currentKeywords = keywords.map(k => k.keyword)
+  renderPage(keywords, rankData)
 }
 
-function renderRankTable(keywords, ranks) {
+function renderPage(keywords, ranks) {
   const content = document.getElementById('main-content')
 
-  if (keywords.length === 0) {
-    content.innerHTML = `
+  const progressHtml = `
+    <div class="progress-panel ${isCrawling ? 'show' : ''}" id="progress-panel">
+      <div class="progress-header ${isCrawling ? '' : 'done'}" id="progress-header">
+        <div class="progress-title">
+          <div class="spinner"></div>
+          <span id="progress-title-text">${isCrawling ? '순위 조회 중...' : '순위 조회 대기'}</span>
+        </div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-pct" id="progress-pct"></div>
+      <div class="kw-progress-list" id="kw-progress-list"></div>
+    </div>`
+
+  if (!keywords.length) {
+    content.innerHTML = progressHtml + `
       <div class="empty-state">
         <div class="icon">🔑</div>
         <h3>등록된 키워드가 없습니다</h3>
-        <p>아래 키워드 추가 버튼을 눌러 추적할 키워드를 등록하세요.<br>상품당 최대 10개까지 등록 가능합니다.</p>
+        <p>아래에서 키워드를 추가하세요. 상품당 최대 10개</p>
       </div>
-      <div class="kw-section" style="margin-top:16px">
-        ${renderKeywordManage(keywords)}
-      </div>`
+      <div class="kw-section">${renderKeywordManage(keywords)}</div>`
     return
   }
 
-  // 날짜 목록 (최근 14일)
   const dates = []
   for (let i = 0; i < 14; i++) {
-    const d = new Date()
-    d.setDate(d.getDate() - i)
+    const d = new Date(); d.setDate(d.getDate() - i)
     dates.push(d.toISOString().slice(0, 10))
   }
-  const datesWithData = dates.filter(date =>
-    ranks.some(r => r.date === date)
-  )
-  const displayDates = datesWithData.length > 0 ? datesWithData : dates.slice(0, 7)
+  const withData = dates.filter(d => ranks.some(r => r.date === d))
+  const displayDates = withData.length ? withData : dates.slice(0, 7)
 
-  // 키워드별 날짜별 데이터 맵
   const rankMap = {}
   ranks.forEach(r => {
     if (!rankMap[r.keyword_id]) rankMap[r.keyword_id] = {}
@@ -387,113 +466,87 @@ function renderRankTable(keywords, ranks) {
 
   const fmtDate = d => {
     const [,m,dd] = d.split('-')
-    const isToday = d === TODAY
-    return `<span class="${isToday ? 'date-today' : ''}">${m}/${dd}</span>`
+    return `<span class="${d === TODAY ? 'date-today' : ''}">${m}/${dd}</span>`
   }
 
   const rankCell = (r, prevR) => {
     if (!r) return `<span class="rank-none">-</span>`
     if (r.error) return `<span class="rank-error">오류</span>`
-
     const nat = r.natural_rank
-    const adMin = r.ad_rank_min
-    const adMax = r.ad_rank_max
-
     let arrow = ''
-    if (prevR && prevR.natural_rank && nat) {
+    if (prevR?.natural_rank && nat) {
       if (nat < prevR.natural_rank) arrow = '<span class="rank-arrow up">▲</span>'
       else if (nat > prevR.natural_rank) arrow = '<span class="rank-arrow down">▼</span>'
-      else arrow = '<span class="rank-arrow same">-</span>'
+      else arrow = '<span class="rank-arrow" style="color:var(--text3)">-</span>'
     }
-
-    const rankClass = nat ? (nat <= 3 ? 'good' : nat <= 10 ? 'mid' : 'bad') : ''
-    const natText = nat ? `<span class="rank-num ${rankClass}">${nat}위</span>` : `<span class="rank-none">자연-</span>`
-    const adText = adMin ? `<span class="rank-range">(광고 ${adMin}${adMin !== adMax ? '-'+adMax : ''}위)</span>` : ''
-
-    return `<div class="rank-cell">${natText}${arrow}${adText}</div>`
+    const cls = nat ? (nat <= 3 ? 'good' : nat <= 10 ? 'mid' : 'bad') : ''
+    const natTxt = nat ? `<span class="rank-num ${cls}">${nat}위</span>` : `<span class="rank-none">-</span>`
+    const adTxt = r.ad_rank_min ? `<span class="rank-range">(광고${r.ad_rank_min}${r.ad_rank_min !== r.ad_rank_max ? '-'+r.ad_rank_max : ''}위)</span>` : ''
+    return `<div class="rank-cell">${natTxt}${arrow}${adTxt}</div>`
   }
 
-  let html = `
+  let tableHtml = `
     <div class="kw-section">
       <div class="kw-section-header">
-        <span class="kw-section-title">📊 키워드별 순위 추이 (최근 14일)</span>
-        <span style="font-size:11px;color:var(--text3)">▲ 상승(빨강) ▼ 하락(파랑)</span>
+        <span class="kw-section-title">📊 키워드별 순위 추이</span>
+        <span style="font-size:11px;color:var(--text3)">▲ 상승 ▼ 하락</span>
       </div>
       <div class="rank-table-wrap">
         <table class="rank-table">
-          <thead>
-            <tr>
-              <th class="kw-col">키워드</th>
-              ${displayDates.map(d => `<th>${fmtDate(d)}</th>`).join('')}
-            </tr>
-          </thead>
-          <tbody>
-  `
+          <thead><tr>
+            <th class="kw-col">키워드</th>
+            ${displayDates.map(d => `<th>${fmtDate(d)}</th>`).join('')}
+          </tr></thead>
+          <tbody>`
 
   keywords.forEach(kw => {
-    html += `<tr><td class="kw-col">${esc(kw.keyword)}</td>`
+    tableHtml += `<tr><td class="kw-col">${esc(kw.keyword)}</td>`
     displayDates.forEach((date, i) => {
       const r = rankMap[kw.id]?.[date]
-      const prevDate = displayDates[i + 1]
-      const prevR = prevDate ? rankMap[kw.id]?.[prevDate] : null
-      html += `<td>${rankCell(r, prevR)}</td>`
+      const prevR = rankMap[kw.id]?.[displayDates[i+1]]
+      tableHtml += `<td>${rankCell(r, prevR)}</td>`
     })
-    html += `</tr>`
+    tableHtml += `</tr>`
   })
 
-  html += `
-          </tbody>
-        </table>
-      </div>
-      ${renderKeywordManage(keywords)}
-    </div>
-  `
+  tableHtml += `</tbody></table></div>${renderKeywordManage(keywords)}</div>`
 
-  content.innerHTML = html
+  content.innerHTML = progressHtml + tableHtml
+
+  if (isCrawling) renderProgressList()
 }
 
 function renderKeywordManage(keywords) {
   const tags = keywords.map(k => `
     <span class="kw-tag">
       ${esc(k.keyword)}
-      <button class="kw-tag-del" onclick="deleteKeyword(${k.id})" title="삭제">×</button>
-    </span>
-  `).join('')
-
+      <button class="kw-tag-del" onclick="deleteKeyword(${k.id})">×</button>
+    </span>`).join('')
   const canAdd = keywords.length < 10
   return `
     <div class="kw-manage">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500">
-        키워드 관리 (${keywords.length}/10)
-      </div>
-      <div class="kw-list" id="kw-list">${tags || '<span style="font-size:11px;color:var(--text3)">등록된 키워드가 없습니다</span>'}</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500">키워드 관리 (${keywords.length}/10)</div>
+      <div class="kw-list">${tags || '<span style="font-size:11px;color:var(--text3)">등록된 키워드가 없습니다</span>'}</div>
       ${canAdd ? `
         <div class="kw-add-row">
           <input class="kw-input" type="text" id="new-kw-input" placeholder="키워드 입력 후 Enter"
             onkeydown="if(event.key==='Enter')addKeyword()">
           <button class="btn btn-sm btn-primary" onclick="addKeyword()">추가</button>
-        </div>
-      ` : '<div style="font-size:11px;color:var(--amber)">키워드는 최대 10개까지 등록 가능합니다</div>'}
-    </div>
-  `
+        </div>` : '<div style="font-size:11px;color:var(--amber)">최대 10개까지 등록 가능합니다</div>'}
+    </div>`
 }
 
-// ── 키워드 추가/삭제 ──────────────────────────────
+// ── 키워드 ────────────────────────────────────────
 async function addKeyword() {
   const inp = document.getElementById('new-kw-input')
   if (!inp) return
   const keyword = inp.value.trim()
   if (!keyword) return
-
   const res = await fetch(`/api/products/${currentProductId}/keywords`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ keyword })
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({keyword})
   })
   const data = await res.json()
-
-  if (!res.ok) { showStatus(data.error, 'error'); return }
-
+  if (!res.ok) { alert(data.error); return }
   inp.value = ''
   await loadRanks()
   await loadProducts()
@@ -501,12 +554,12 @@ async function addKeyword() {
 
 async function deleteKeyword(id) {
   if (!confirm('이 키워드를 삭제할까요?')) return
-  await fetch(`/api/keywords/${id}`, { method: 'DELETE' })
+  await fetch(`/api/keywords/${id}`, {method:'DELETE'})
   await loadRanks()
   await loadProducts()
 }
 
-// ── 상품 추가/수정/삭제 ───────────────────────────
+// ── 상품 ──────────────────────────────────────────
 function openAddProduct() {
   editingProductId = null
   document.getElementById('modal-title').textContent = '상품 추가'
@@ -532,96 +585,56 @@ async function saveProduct() {
   const name = document.getElementById('prod-name').value.trim()
   const product_id = document.getElementById('prod-coupang-id').value.trim()
   const url = document.getElementById('prod-url').value.trim()
-
   if (!name || !product_id) { alert('상품명과 상품 ID는 필수입니다'); return }
-
-  if (products.length >= 5 && !editingProductId) {
-    alert('상품은 최대 5개까지 등록 가능합니다'); return
-  }
+  if (products.length >= 5 && !editingProductId) { alert('상품은 최대 5개까지 등록 가능합니다'); return }
 
   if (editingProductId) {
     await fetch(`/api/products/${editingProductId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, product_id, url })
+      method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,product_id,url})
     })
   } else {
     const res = await fetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, product_id, url })
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,product_id,url})
     })
     const data = await res.json()
     if (!res.ok) { alert(data.error); return }
   }
-
   closeModal('product-modal')
   await loadProducts()
-  if (editingProductId) {
-    await selectProduct(editingProductId)
-  } else {
-    const newest = products[0]
-    if (newest) await selectProduct(newest.id)
-  }
+  if (editingProductId) await selectProduct(editingProductId)
+  else if (products.length > 0) await selectProduct(products[0].id)
 }
 
 async function deleteProduct() {
   const p = products.find(p => p.id === currentProductId)
   if (!p) return
   if (!confirm(`"${p.name}" 상품과 모든 순위 데이터를 삭제할까요?`)) return
-
-  await fetch(`/api/products/${currentProductId}`, { method: 'DELETE' })
+  await fetch(`/api/products/${currentProductId}`, {method:'DELETE'})
   currentProductId = null
   await loadProducts()
-
   document.getElementById('header-title').textContent = '상품을 선택하세요'
   document.getElementById('header-sub').textContent = '좌측에서 상품을 선택하거나 추가하세요'
   document.getElementById('header-actions').style.display = 'none'
-  document.getElementById('main-content').innerHTML = `
-    <div class="empty-state">
-      <div class="icon">📦</div>
-      <h3>상품을 선택하세요</h3>
-      <p>좌측에서 상품을 선택하거나 추가하세요</p>
-    </div>`
-
+  document.getElementById('main-content').innerHTML = `<div class="empty-state"><div class="icon">📦</div><h3>상품을 선택하세요</h3></div>`
   if (products.length > 0) selectProduct(products[0].id)
 }
 
 // ── 크롤링 ────────────────────────────────────────
 async function crawlCurrent() {
-  if (!currentProductId) return
-  const btn = document.getElementById('crawl-btn')
-  btn.disabled = true
-  btn.textContent = '조회 중...'
-  showStatus('순위를 조회하고 있습니다. 키워드 수에 따라 1~3분 소요됩니다.', 'warn')
-
-  const res = await fetch(`/api/crawl/${currentProductId}`, { method: 'POST' })
+  if (!currentProductId || isCrawling) return
+  kwProgressMap = {}
+  const panel = document.getElementById('progress-panel')
+  if (panel) {
+    panel.classList.add('show')
+    updatePanelHeader(false, '조회 시작 중...', 0)
+  }
+  const res = await fetch(`/api/crawl/${currentProductId}`, {method:'POST'})
   const data = await res.json()
-
-  setTimeout(async () => {
-    await loadRanks()
-    btn.disabled = false
-    btn.textContent = '순위 조회'
-    showStatus('순위 조회가 완료되었습니다!', 'success')
-  }, 60000)
+  if (!res.ok) { alert(data.error); return }
 }
 
-// ── 유틸 ──────────────────────────────────────────
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none'
-}
-
-function showStatus(msg, type = 'warn') {
-  const bar = document.getElementById('status-bar')
-  bar.textContent = msg
-  bar.className = 'status-bar' + (type === 'success' ? ' success' : '')
-  bar.classList.remove('hidden')
-  if (type === 'success') setTimeout(() => bar.classList.add('hidden'), 4000)
-}
-
-function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-}
+function closeModal(id) { document.getElementById(id).style.display = 'none' }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 
 init()
 </script>
