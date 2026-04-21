@@ -11,9 +11,10 @@
     "axios": "^1.6.0",
     "cheerio": "^1.0.0",
     "node-cron": "^3.0.3",
-    "better-sqlite3": "^9.4.3"
+    "sqlite3": "^5.1.7",
+    "sqlite": "^5.1.1"
   },
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=18.0.0"
   }
 }
